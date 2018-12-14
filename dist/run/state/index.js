@@ -224,7 +224,7 @@ class State {
   }
 
   resetTests() {
-    this.set({
+    return this.set({
       tests: []
     });
   }
