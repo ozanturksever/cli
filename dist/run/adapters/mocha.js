@@ -343,6 +343,45 @@ function (_BaseAdapter) {
         ui: ui
       });
       mocha.reporter(function (runner) {
+        function send(event, data, err) {
+          // console.log('sending', event, data, err)
+          // console.log('sending serial', event, window.mochaTransport.serialize(data))
+          window.socketIOClient.emit("mocha/" + event, window.mochaTransport.serialize(data), err);
+        }
+
+        runner.on('start', function (data) {
+          send('start', data);
+        });
+        runner.on('end', function (data) {
+          send('end', data);
+        });
+        runner.on('suite', function (data) {
+          send('suite', data);
+        });
+        runner.on('suite end', function (data) {
+          send('suite end', data);
+        });
+        runner.on('test', function (data) {
+          send('test', data);
+        });
+        runner.on('test end', function (data) {
+          send('test end', data);
+        });
+        runner.on('hook', function (data) {
+          send('hook', data);
+        });
+        runner.on('hook end', function (data) {
+          send('hook end', data);
+        });
+        runner.on('pass', function (data) {
+          send('pass', data);
+        });
+        runner.on('fail', function (data, err) {
+          send('fail', data, err);
+        });
+        runner.on('pending', function (data) {
+          send('pending', data);
+        });
         runner.on('start', _this.handleStart.bind(_this));
         runner.on('end', _this.handleEnd.bind(_this));
         runner.on('test', _this.handleTest.bind(_this));
