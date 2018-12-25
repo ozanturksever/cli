@@ -344,7 +344,7 @@ function (_BaseAdapter) {
       if (grep) {
         mocha.setup({
           ui: ui,
-          grep: grep
+          grep: new RegExp("^" + grep)
         });
         window.localStorage.removeItem('grep');
       } else {
@@ -357,7 +357,7 @@ function (_BaseAdapter) {
         function send(event, data, err) {
           // console.log('sending', event, data, err)
           // console.log('sending serial', event, window.mochaTransport.serialize(data))
-          window.socketIOClient.emit("mocha/" + event, window.mochaTransport.serialize(data), err);
+          window.socketIOClient.emit("mocha/" + event, window.mochaTransport.serialize(data), window.mochaTransport.serialize(err));
         }
 
         runner.on('start', function (data) {
@@ -365,25 +365,25 @@ function (_BaseAdapter) {
         });
         runner.on('end', function (data) {
           send('end', data);
-        }); // runner.on('suite', (data) => {
-        //   send('suite', data)
-        // });
-        // runner.on('suite end', (data) => {
-        //   send('suite end', data)
-        // });
-
+        });
+        runner.on('suite', function (data) {
+          send('suite', data);
+        });
+        runner.on('suite end', function (data) {
+          send('suite end', data);
+        });
         runner.on('test', function (data) {
           send('test', data);
         });
         runner.on('test end', function (data) {
           send('test end', data);
-        }); // runner.on('hook', (data) => {
-        //   send('hook', data)
-        // });
-        // runner.on('hook end', (data) => {
-        //   send('hook end', data)
-        // });
-
+        });
+        runner.on('hook', function (data) {
+          send('hook', data);
+        });
+        runner.on('hook end', function (data) {
+          send('hook end', data);
+        });
         runner.on('pass', function (data) {
           send('pass', data);
         });
