@@ -339,9 +339,20 @@ function (_BaseAdapter) {
           _ref2$ui = _ref2.ui,
           ui = _ref2$ui === void 0 ? 'bdd' : _ref2$ui;
 
-      mocha.setup({
-        ui: ui
-      });
+      var grep = window.localStorage.getItem('grep');
+
+      if (grep) {
+        mocha.setup({
+          ui: ui,
+          grep: grep
+        });
+        window.localStorage.removeItem('grep');
+      } else {
+        mocha.setup({
+          ui: ui
+        });
+      }
+
       mocha.reporter(function (runner) {
         function send(event, data, err) {
           // console.log('sending', event, data, err)
@@ -354,25 +365,25 @@ function (_BaseAdapter) {
         });
         runner.on('end', function (data) {
           send('end', data);
-        });
-        runner.on('suite', function (data) {
-          send('suite', data);
-        });
-        runner.on('suite end', function (data) {
-          send('suite end', data);
-        });
+        }); // runner.on('suite', (data) => {
+        //   send('suite', data)
+        // });
+        // runner.on('suite end', (data) => {
+        //   send('suite end', data)
+        // });
+
         runner.on('test', function (data) {
           send('test', data);
         });
         runner.on('test end', function (data) {
           send('test end', data);
-        });
-        runner.on('hook', function (data) {
-          send('hook', data);
-        });
-        runner.on('hook end', function (data) {
-          send('hook end', data);
-        });
+        }); // runner.on('hook', (data) => {
+        //   send('hook', data)
+        // });
+        // runner.on('hook end', (data) => {
+        //   send('hook end', data)
+        // });
+
         runner.on('pass', function (data) {
           send('pass', data);
         });
