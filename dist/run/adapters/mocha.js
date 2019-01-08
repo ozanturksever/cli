@@ -357,7 +357,7 @@ function (_BaseAdapter) {
         function send(event, data, err) {
           // console.log('sending', event, data, err)
           // console.log('sending serial', event, window.mochaTransport.serialize(data))
-          window.socketIOClient.emit("mocha/" + event, window.mochaTransport.serialize(data), window.mochaTransport.serialize(err));
+          window.socketIOClient.emit("mocha/" + event, window.mochaTransport.serialize(data), window.mochaTransport.serializeError(err));
         }
 
         runner.on('start', function (data) {
