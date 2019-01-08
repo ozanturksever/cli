@@ -373,11 +373,11 @@ function (_BaseAdapter) {
           send('suite end', data);
         });
         runner.on('test', function (data) {
-          console.log("testStart:" + JSON.stringify(data.titlePath()));
+          console.group(JSON.stringify(data.titlePath()));
           send('test', data);
         });
         runner.on('test end', function (data) {
-          console.log("testEnd");
+          console.groupEnd();
           send('test end', data);
         });
         runner.on('hook', function (data) {
