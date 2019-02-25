@@ -153,11 +153,11 @@ class Coordinator {
       await this.browsers.launch(this.client.url, browser => {
         this.log.info(`Launching ${browser.name}...`);
         this.store.launchBrowser(browser.id);
-      }); // give browsers 10 seconds to connect
+      }); // give browsers 30 seconds to connect
 
       await (0, _convergence.when)(() => this.store.ready || function (e) {
         throw e;
-      }(new Error('Launched browsers did not connect')), 10000); // when ready, tests will start running
+      }(new Error('Launched browsers did not connect')), 30000); // when ready, tests will start running
 
       this.log.debug('Starting tests...'); // catch errors and cleanup
     } catch (err) {
