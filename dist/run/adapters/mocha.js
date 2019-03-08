@@ -378,6 +378,9 @@ function (_BaseAdapter) {
         });
         runner.on('test end', function (data) {
           console.groupEnd();
+          console.groupEnd();
+          console.groupEnd();
+          console.groupEnd();
           send('test end', data);
         });
         runner.on('hook', function (data) {
@@ -387,12 +390,24 @@ function (_BaseAdapter) {
           send('hook end', data);
         });
         runner.on('pass', function (data) {
+          console.groupEnd();
+          console.groupEnd();
+          console.groupEnd();
+          console.groupEnd();
           send('pass', data);
         });
         runner.on('fail', function (data, err) {
+          console.groupEnd();
+          console.groupEnd();
+          console.groupEnd();
+          console.groupEnd();
           send('fail', data, err);
         });
         runner.on('pending', function (data) {
+          console.groupEnd();
+          console.groupEnd();
+          console.groupEnd();
+          console.groupEnd();
           send('pending', data);
         });
         runner.on('start', _this.handleStart.bind(_this));
