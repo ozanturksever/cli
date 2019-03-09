@@ -386,9 +386,9 @@ function (_BaseAdapter) {
           send('suite', data);
 
           if (data.title !== "") {
-            console.group("tests");
-          } else {
             console.group(data.title);
+          } else {
+            console.group("tests");
           }
         });
         runner.on('suite end', function (data) {
