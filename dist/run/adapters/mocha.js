@@ -424,6 +424,7 @@ function (_BaseAdapter) {
         });
         runner.on('fail', function (data, err) {
           fail += 1;
+          console.log(err);
           send('fail', data, err);
         });
         runner.on('pending', function (data) {
