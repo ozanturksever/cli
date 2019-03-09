@@ -333,8 +333,6 @@ function (_BaseAdapter) {
   _createClass(MochaAdapter, [{
     key: "init",
     value: function init() {
-      var _this = this;
-
       var _ref2 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
           _ref2$ui = _ref2.ui,
           ui = _ref2$ui === void 0 ? 'bdd' : _ref2$ui;
@@ -355,31 +353,62 @@ function (_BaseAdapter) {
 
       mocha.reporter(function (runner) {
         function send(event, data, err) {
+          // console.log('sending', event)
           // console.log('sending', event, data, err)
           // console.log('sending serial', event, window.mochaTransport.serialize(data))
-          window.socketIOClient.emit("mocha/" + event, window.mochaTransport.serialize(data), window.mochaTransport.serializeError(err));
+          try {
+            window.socketIOClient.emit("mocha/" + event, window.mochaTransport.serialize(data), window.mochaTransport.serializeError(err));
+          } catch (e) {
+            console.log("mocha serialization error");
+            console.error(e);
+          }
         }
 
+        var pass = 0;
+        var fail = 0;
+        var pending = 0;
+        var total = 0;
         runner.on('start', function (data) {
+          pass = 0;
+          fail = 0;
+          pending = 0;
+          total = 0;
           send('start', data);
         });
         runner.on('end', function (data) {
+          // console.table([
+          //   {pass,fail, pending,total}
+          // ])
+          console.log("%cpass:".concat(pass, " %cfail:").concat(fail, " %cpending:").concat(pending, " %ctotal:").concat(total), 'color: green', 'color: red', 'color: orange', 'color: black');
           send('end', data);
         });
         runner.on('suite', function (data) {
           send('suite', data);
+
+          if (data.title !== "") {
+            console.group("tests");
+          } else {
+            console.group(data.title);
+          }
         });
         runner.on('suite end', function (data) {
+          console.groupEnd();
           send('suite end', data);
         });
         runner.on('test', function (data) {
-          console.group(JSON.stringify(data.titlePath()));
+          // console.group(JSON.stringify(data.titlePath()));
+          total += 1;
+
+          if (data.state === 'passed') {
+            console.groupCollapsed(data.title);
+          } else {
+            console.group(data.title);
+          }
+
+          console.timeStamp(data.title);
           send('test', data);
         });
         runner.on('test end', function (data) {
-          console.groupEnd();
-          console.groupEnd();
-          console.groupEnd();
           console.groupEnd();
           send('test end', data);
         });
@@ -390,24 +419,15 @@ function (_BaseAdapter) {
           send('hook end', data);
         });
         runner.on('pass', function (data) {
-          console.groupEnd();
-          console.groupEnd();
-          console.groupEnd();
-          console.groupEnd();
+          pass += 1;
           send('pass', data);
         });
         runner.on('fail', function (data, err) {
-          console.groupEnd();
-          console.groupEnd();
-          console.groupEnd();
-          console.groupEnd();
+          fail += 1;
           send('fail', data, err);
         });
         runner.on('pending', function (data) {
-          console.groupEnd();
-          console.groupEnd();
-          console.groupEnd();
-          console.groupEnd();
+          pending += 1;
           send('pending', data);
         });
         runner.on('start', _this.handleStart.bind(_this));
