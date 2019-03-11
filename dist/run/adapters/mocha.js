@@ -333,6 +333,8 @@ function (_BaseAdapter) {
   _createClass(MochaAdapter, [{
     key: "init",
     value: function init() {
+      var _this = this;
+
       var _ref2 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
           _ref2$ui = _ref2.ui,
           ui = _ref2$ui === void 0 ? 'bdd' : _ref2$ui;
